@@ -406,36 +406,6 @@ fn shutdown() {
 }
 
 #[test]
-#[cfg(feature = "alpn")]
-fn alpn_google_h2() {
-    let builder = p!(TlsConnector::builder().request_alpns(&["h2"]).build());
-    let s = p!(TcpStream::connect("google.com:443"));
-    let socket = p!(builder.connect("google.com", s));
-    let alpn = p!(socket.negotiated_alpn());
-    assert_eq!(alpn, Some(b"h2".to_vec()));
-}
-
-#[test]
-#[cfg(feature = "alpn")]
-fn alpn_google_invalid() {
-    let builder = p!(TlsConnector::builder().request_alpns(&["h2c"]).build());
-    let s = p!(TcpStream::connect("google.com:443"));
-    let socket = p!(builder.connect("google.com", s));
-    let alpn = p!(socket.negotiated_alpn());
-    assert_eq!(alpn, None);
-}
-
-#[test]
-#[cfg(feature = "alpn")]
-fn alpn_google_none() {
-    let builder = p!(TlsConnector::new());
-    let s = p!(TcpStream::connect("google.com:443"));
-    let socket = p!(builder.connect("google.com", s));
-    let alpn = p!(socket.negotiated_alpn());
-    assert_eq!(alpn, None);
-}
-
-#[test]
 fn server_pkcs8() {
     let keys = test_cert_gen::keys();
     let cert = keys.server.cert_and_key.cert.to_pem().into_bytes();
